@@ -4,8 +4,8 @@ import { Link, useParams } from "react-router-dom";
 import Marquee from "react-fast-marquee";
 import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
-
 import { Footer, Navbar } from "../components";
+import { motion } from "framer-motion";
 
 const Product = () => {
   const { id } = useParams();
@@ -77,20 +77,26 @@ const Product = () => {
             </div>
             <div className="col-md-6 col-md-6 py-5">
               <h4 className="text-uppercase text-muted">{product.category}</h4>
-              <h1 className="display-5">{product.title}</h1>
-              <p className="lead">
+              <h1 className="display-5 text-light">{product.title}</h1>
+              <p className="lead text-light">
                 {product.rating && product.rating.rate}{" "}
                 <i className="fa fa-star"></i>
               </p>
-              <h3 className="display-6  my-4">${product.price}</h3>
-              <p className="lead">{product.description}</p>
-              <button
+              <h3 className="display-6 my-4 text-light">${product.price}</h3>
+              <p className="lead text-light">{product.description}</p>
+              <motion.button
                 className="btn btn-outline-dark"
                 onClick={() => addProduct(product)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 Add to Cart
-              </button>
-              <Link to="/cart" className="btn btn-dark mx-3">
+              </motion.button>
+              <Link
+                to="/cart"
+                className="btn btn-dark mx-3"
+                style={{ textDecoration: "none" }}
+              >
                 Go to Cart
               </Link>
             </div>
@@ -130,7 +136,12 @@ const Product = () => {
           <div className="d-flex">
             {similarProducts.map((item) => {
               return (
-                <div key={item.id} className="card mx-4 text-center">
+                <motion.div
+                  key={item.id}
+                  className="card mx-4 text-center"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <img
                     className="card-img-top p-3"
                     src={item.image}
@@ -139,13 +150,10 @@ const Product = () => {
                     width={300}
                   />
                   <div className="card-body">
-                    <h5 className="card-title">
+                    <h5 className="card-title text-light">
                       {item.title.substring(0, 15)}...
                     </h5>
                   </div>
-                  {/* <ul className="list-group list-group-flush">
-                    <li className="list-group-item lead">${product.price}</li>
-                  </ul> */}
                   <div className="card-body">
                     <Link
                       to={"/product/" + item.id}
@@ -160,7 +168,7 @@ const Product = () => {
                       Add to Cart
                     </button>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -168,6 +176,7 @@ const Product = () => {
       </>
     );
   };
+
   return (
     <>
       <Navbar />
@@ -175,12 +184,8 @@ const Product = () => {
         <div className="row">{loading ? <Loading /> : <ShowProduct />}</div>
         <div className="row my-5 py-5">
           <div className="d-none d-md-block">
-          <h2 className="">You may also Like</h2>
-            <Marquee
-              pauseOnHover={true}
-              pauseOnClick={true}
-              speed={50}
-            >
+            <h2 className="text-light">You may also Like</h2>
+            <Marquee pauseOnHover={true} pauseOnClick={true} speed={50}>
               {loading2 ? <Loading2 /> : <ShowSimilarProduct />}
             </Marquee>
           </div>

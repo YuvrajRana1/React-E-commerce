@@ -3,6 +3,8 @@ import { Footer, Navbar } from "../components";
 import { useSelector, useDispatch } from "react-redux";
 import { addCart, delCart } from "../redux/action";
 import { Link } from "react-router-dom";
+import { Card, CardContent, Typography, Button, Grid, Box } from "@mui/material";
+import { motion } from "framer-motion";
 
 const Cart = () => {
   const state = useSelector((state) => state.handleCart);
@@ -10,22 +12,39 @@ const Cart = () => {
 
   const EmptyCart = () => {
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12 py-5 bg-light text-center">
-            <h4 className="p-3 display-5">Your Cart is Empty</h4>
-            <Link to="/" className="btn  btn-outline-dark mx-4">
-              <i className="fa fa-arrow-left"></i> Continue Shopping
-            </Link>
-          </div>
-        </div>
-      </div>
+      <Box sx={{ textAlign: "center", py: 5 }}>
+        <Typography variant="h4" gutterBottom>
+          Your Cart is Empty
+        </Typography>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{
+              mx: 2,
+              borderRadius: "50px",
+              paddingX: 3,
+              paddingY: 1.5,
+              textTransform: "none",
+              fontSize: "1.1rem",
+              "&:hover": {
+                backgroundColor: "#1976d2",
+                color: "white",
+                boxShadow: 2,
+              },
+            }}
+          >
+            <i className="fa fa-arrow-left"></i> Continue Shopping
+          </Button>
+        </Link>
+      </Box>
     );
   };
 
   const addItem = (product) => {
     dispatch(addCart(product));
   };
+
   const removeItem = (product) => {
     dispatch(delCart(product));
   };
@@ -41,121 +60,130 @@ const Cart = () => {
     state.map((item) => {
       return (totalItems += item.qty);
     });
+
     return (
       <>
-        <section className="h-100 gradient-custom">
-          <div className="container py-5">
-            <div className="row d-flex justify-content-center my-4">
-              <div className="col-md-8">
-                <div className="card mb-4">
-                  <div className="card-header py-3">
-                    <h5 className="mb-0">Item List</h5>
-                  </div>
-                  <div className="card-body">
-                    {state.map((item) => {
-                      return (
-                        <div key={item.id}>
-                          <div className="row d-flex align-items-center">
-                            <div className="col-lg-3 col-md-12">
-                              <div
-                                className="bg-image rounded"
-                                data-mdb-ripple-color="light"
+        <section className="gradient-custom">
+          <Box sx={{ py: 5 }}>
+            <Grid container spacing={4} justifyContent="center">
+              <Grid item xs={12} md={8}>
+                <Card sx={{ boxShadow: 3, bgcolor: "#1e1e1e", borderRadius: 2 }}>
+                  <CardContent>
+                    <Typography variant="h5" color="primary" align="center">
+                      Item List
+                    </Typography>
+                    {state.map((item) => (
+                      <motion.div
+                        key={item.id}
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Grid container spacing={3} alignItems="center">
+                          <Grid item xs={4} sm={3}>
+                            <img
+                              src={item.image}
+                              alt={item.title}
+                              width={100}
+                              height={75}
+                              style={{ borderRadius: "8px" }}
+                            />
+                          </Grid>
+                          <Grid item xs={8} sm={6}>
+                            <Typography variant="body1" color="text.primary">
+                              {item.title}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={3}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Button
+                                variant="outlined"
+                                color="error"
+                                onClick={() => removeItem(item)}
+                                sx={{
+                                  borderRadius: "50px",
+                                  "&:hover": {
+                                    backgroundColor: "#f44336",
+                                    color: "white",
+                                    boxShadow: 2,
+                                  },
+                                }}
                               >
-                                <img
-                                  src={item.image}
-                                  // className="w-100"
-                                  alt={item.title}
-                                  width={100}
-                                  height={75}
-                                />
-                              </div>
-                            </div>
-
-                            <div className="col-lg-5 col-md-6">
-                              <p>
-                                <strong>{item.title}</strong>
-                              </p>
-                              {/* <p>Color: blue</p>
-                              <p>Size: M</p> */}
-                            </div>
-
-                            <div className="col-lg-4 col-md-6">
-                              <div
-                                className="d-flex mb-4"
-                                style={{ maxWidth: "300px" }}
+                                <i className="fas fa-minus"></i>
+                              </Button>
+                              <Typography variant="body2">{item.qty}</Typography>
+                              <Button
+                                variant="outlined"
+                                color="success"
+                                onClick={() => addItem(item)}
+                                sx={{
+                                  borderRadius: "50px",
+                                  "&:hover": {
+                                    backgroundColor: "#4caf50",
+                                    color: "white",
+                                    boxShadow: 2,
+                                  },
+                                }}
                               >
-                                <button
-                                  className="btn px-3"
-                                  onClick={() => {
-                                    removeItem(item);
-                                  }}
-                                >
-                                  <i className="fas fa-minus"></i>
-                                </button>
+                                <i className="fas fa-plus"></i>
+                              </Button>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                        <hr />
+                      </motion.div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </Grid>
 
-                                <p className="mx-5">{item.qty}</p>
-
-                                <button
-                                  className="btn px-3"
-                                  onClick={() => {
-                                    addItem(item);
-                                  }}
-                                >
-                                  <i className="fas fa-plus"></i>
-                                </button>
-                              </div>
-
-                              <p className="text-start text-md-center">
-                                <strong>
-                                  <span className="text-muted">{item.qty}</span>{" "}
-                                  x ${item.price}
-                                </strong>
-                              </p>
-                            </div>
-                          </div>
-
-                          <hr className="my-4" />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="card mb-4">
-                  <div className="card-header py-3 bg-light">
-                    <h5 className="mb-0">Order Summary</h5>
-                  </div>
-                  <div className="card-body">
-                    <ul className="list-group list-group-flush">
-                      <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                        Products ({totalItems})<span>${Math.round(subtotal)}</span>
-                      </li>
-                      <li className="list-group-item d-flex justify-content-between align-items-center px-0">
-                        Shipping
-                        <span>${shipping}</span>
-                      </li>
-                      <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                        <div>
-                          <strong>Total amount</strong>
-                        </div>
-                        <span>
-                          <strong>${Math.round(subtotal + shipping)}</strong>
-                        </span>
-                      </li>
-                    </ul>
-
-                    <Link
-                      to="/checkout"
-                      className="btn btn-dark btn-lg btn-block"
-                    >
-                      Go to checkout
+              <Grid item xs={12} md={4}>
+                <Card sx={{ boxShadow: 3, bgcolor: "#1e1e1e", borderRadius: 2 }}>
+                  <CardContent>
+                    <Typography variant="h5" color="primary" align="center" gutterBottom>
+                      Order Summary
+                    </Typography>
+                    <Box>
+                      <Typography variant="body1" color="text.primary">
+                        Products ({totalItems}): <strong>${Math.round(subtotal)}</strong>
+                      </Typography>
+                      <Typography variant="body1" color="text.primary">
+                        Shipping: <strong>${shipping}</strong>
+                      </Typography>
+                      <Typography variant="h6" color="text.primary" sx={{ mt: 2 }}>
+                        Total: <strong>${Math.round(subtotal + shipping)}</strong>
+                      </Typography>
+                    </Box>
+                    <Link to="/checkout" style={{ textDecoration: "none" }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                          width: "100%",
+                          mt: 2,
+                          borderRadius: "50px",
+                          paddingX: 3,
+                          paddingY: 1.5,
+                          textTransform: "none",
+                          fontSize: "1.2rem",
+                          "&:hover": {
+                            backgroundColor: "#115293",
+                          },
+                        }}
+                      >
+                        Go to Checkout
+                      </Button>
                     </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
         </section>
       </>
     );
@@ -165,7 +193,9 @@ const Cart = () => {
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">Cart</h1>
+        <Typography variant="h3" align="center" gutterBottom>
+          Cart
+        </Typography>
         <hr />
         {state.length > 0 ? <ShowCart /> : <EmptyCart />}
       </div>
